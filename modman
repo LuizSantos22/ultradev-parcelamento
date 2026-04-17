@@ -1,0 +1,6 @@
+app/code/community/UltraDev/Parcelamento    app/code/community/UltraDev/Parcelamento
+app/etc/modules/UltraDev_Parcelamento.xml   app/etc/modules/UltraDev_Parcelamento.xml
+app/design/frontend/base/default/layout/ultradev_parcelamento.xml   app/design/frontend/base/default/layout/ultradev_parcelamento.xml
+app/design/frontend/base/default/template/ultradev    app/design/frontend/base/default/template/ultradev
+skin/frontend/base/default/css/ultradev    skin/frontend/base/default/css/ultradev
+skin/frontend/base/default/js/ultradev     skin/frontend/base/default/js/ultradev
