@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <UltraDev_Parcelamento>
+            <active>true</active>
+            <codePool>community</codePool>
+        </UltraDev_Parcelamento>
+    </modules>
+</config>
