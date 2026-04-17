@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <UltraDev_Parcelamento>
+            <version>1.0.0</version>
+        </UltraDev_Parcelamento>
+    </modules>
+
+    <global>
+        <helpers>
+            <ultradev_parcelamento>
+                <class>UltraDev_Parcelamento_Helper</class>
+            </ultradev_parcelamento>
+        </helpers>
+
+        <blocks>
+            <ultradev_parcelamento>
+                <class>UltraDev_Parcelamento_Block</class>
+            </ultradev_parcelamento>
+        </blocks>
+
+        <models>
+            <ultradev_parcelamento>
+                <class>UltraDev_Parcelamento_Model</class>
+            </ultradev_parcelamento>
+        </models>
+    </global>
+
+    <frontend>
+        <layout>
+            <updates>
+                <ultradev_parcelamento>
+                    <file>ultradev_parcelamento.xml</file>
+                </ultradev_parcelamento>
+            </updates>
+        </layout>
+    </frontend>
+
+    <default>
+        <ultradev_parcelamento>
+            <general>
+                <enabled>0</enabled>
+                <max_installments>12</max_installments>
+                <cash_discount>0</cash_discount>
+            </general>
+        </ultradev_parcelamento>
+    </default>
+</config>
