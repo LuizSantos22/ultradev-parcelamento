@@ -1,0 +1,42 @@
+<?php
+/**
+ * UltraDev_Parcelamento — template do widget de parcelamento
+ *
+ * Variáveis disponíveis via o Block:
+ *   $this->getMaxInstallments()        → int
+ *   $this->getCashDiscount()           → float
+ *   $this->getFormattedInstallmentValue() → string (ex: "R$ 29,99")
+ *   $this->getFormattedCashPrice()     → string (ex: "R$ 299,90")
+ *   $this->getInterestTableJson()      → string JSON para o JS
+ */
+?>
+<div class="ultradev-parcelamento">
+
+    <p class="ultradev-parcelamento__installments">
+        <?php echo $this->__('ou até') ?>
+        <strong><?php echo (int) $this->getMaxInstallments() ?>x</strong>
+        <?php echo $this->__('de') ?>
+        <span id="ud-valor-parcela" class="ultradev-parcelamento__price ultradev-parcelamento__price--installment">
+            <?php echo $this->getFormattedInstallmentValue() ?>
+        </span>
+    </p>
+
+    <?php if ($this->getCashDiscount() > 0): ?>
+        <p class="ultradev-parcelamento__cash">
+            <?php echo $this->__('ou') ?>
+            <span id="ud-valor-avista" class="ultradev-parcelamento__price ultradev-parcelamento__price--cash">
+                <?php echo $this->getFormattedCashPrice() ?>
+            </span>
+            <?php echo $this->__('à vista') ?>
+            <span class="ultradev-parcelamento__badge">
+                <?php echo $this->getCashDiscount() ?>% <?php echo $this->__('de desconto') ?>
+            </span>
+        </p>
+    <?php endif; ?>
+
+    {{!-- Dados de configuração para o JS — sem inline style, sem lógica --}}
+    <input type="hidden" id="ud-config-max"    value="<?php echo (int) $this->getMaxInstallments() ?>">
+    <input type="hidden" id="ud-config-desc"   value="<?php echo (float) $this->getCashDiscount() ?>">
+    <input type="hidden" id="ud-config-tabela" value='<?php echo $this->getInterestTableJson() ?>'>
+
+</div>
