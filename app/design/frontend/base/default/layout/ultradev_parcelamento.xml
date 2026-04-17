@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<layout>
+    <catalog_product_view>
+
+        <!-- CSS do módulo -->
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <n>css/ultradev/parcelamento.css</n>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <n>js/ultradev/parcelamento.js</n>
+            </action>
+        </reference>
+
+        <!-- Block injetado como filho do content_product_view,
+             disponível via getChildHtml('ultradev_parcelamento') -->
+        <reference name="product.info">
+            <block type="ultradev_parcelamento/catalog_product_parcelamento"
+                   name="ultradev_parcelamento"
+                   template="ultradev/parcelamento/product/parcelamento.phtml" />
+        </reference>
+
+    </catalog_product_view>
+</layout>
