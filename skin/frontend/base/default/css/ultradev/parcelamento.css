@@ -1,8 +1,12 @@
-/* ==========================================================================
-   UltraDev_Parcelamento — estilos do widget de parcelamento
-   ========================================================================== */
+/* =============================================================================
+   UltraDev_Parcelamento — stylesheet completo
+   ============================================================================= */
 
-.ultradev-parcelamento {
+/* -----------------------------------------------------------------------------
+   1. WIDGET INLINE (página de produto)
+   ----------------------------------------------------------------------------- */
+
+.ud-parcelamento-widget {
     margin: 8px 0;
     padding-top: 6px;
     clear: both;
@@ -10,29 +14,29 @@
     line-height: 1.5;
 }
 
-.ultradev-parcelamento__installments {
+.ud-widget__installments {
     margin: 0 0 4px;
     color: #333;
 }
 
-.ultradev-parcelamento__price {
-    font-weight: bold;
-}
-
-.ultradev-parcelamento__price--installment {
-    color: #e02b27;
-}
-
-.ultradev-parcelamento__cash {
-    margin: 0;
+.ud-widget__cash {
+    margin: 0 0 6px;
     color: #555;
 }
 
-.ultradev-parcelamento__price--cash {
+.ud-widget__price {
+    font-weight: bold;
+}
+
+.ud-widget__price--installment {
+    color: #e02b27;
+}
+
+.ud-widget__price--cash {
     color: #27ae60;
 }
 
-.ultradev-parcelamento__badge {
+.ud-widget__badge {
     display: inline-block;
     background: #27ae60;
     color: #fff;
@@ -42,4 +46,415 @@
     border-radius: 3px;
     margin-left: 4px;
     vertical-align: middle;
+}
+
+.ud-widget__link {
+    display: inline-block;
+    font-size: 12px;
+    color: #2c85c8;
+    text-decoration: underline;
+    margin-top: 4px;
+}
+
+.ud-widget__link:hover {
+    color: #1a5f96;
+}
+
+/* -----------------------------------------------------------------------------
+   2. OVERLAY DO MODAL
+   ----------------------------------------------------------------------------- */
+
+.ud-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+    font-family: 'Nunito', Arial, sans-serif;
+}
+
+.ud-modal-overlay.is-open {
+    display: flex;
+}
+
+/* -----------------------------------------------------------------------------
+   3. CAIXA DO MODAL
+   ----------------------------------------------------------------------------- */
+
+.ud-modal {
+    background: #f7f7f7;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 780px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 4px 8px -4px rgba(89, 89, 89, 0.4);
+}
+
+/* -----------------------------------------------------------------------------
+   4. CABEÇALHO DO MODAL
+   ----------------------------------------------------------------------------- */
+
+.ud-modal__header {
+    background: #2c85c8;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.ud-modal__title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.ud-modal__close {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
+
+.ud-modal__close:hover {
+    opacity: 1;
+}
+
+/* -----------------------------------------------------------------------------
+   5. CORPO DO MODAL (sidebar + conteúdo)
+   ----------------------------------------------------------------------------- */
+
+.ud-modal__body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* -----------------------------------------------------------------------------
+   6. SIDEBAR DE NAVEGAÇÃO
+   ----------------------------------------------------------------------------- */
+
+.ud-modal__nav {
+    width: 220px;
+    flex-shrink: 0;
+    border-right: 1px solid #e7e7e7;
+    background: #fff;
+    overflow-y: auto;
+}
+
+.ud-nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ud-nav__item {
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e7e7e7;
+    border-left: 3px solid transparent;
+    color: #333;
+    font-weight: 400;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ud-nav__item:hover {
+    background: #f5f5f5;
+}
+
+.ud-nav__item.is-active {
+    border-left-color: #2c85c8;
+    background: #f0f4ff;
+    color: #2c85c8;
+    font-weight: 700;
+}
+
+.ud-nav__item.is-active span {
+    color: #2c85c8;
+}
+
+.ud-nav__item-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ud-nav__icon {
+    width: 24px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.ud-nav__item span {
+    font-size: 13px;
+}
+
+.ud-nav__arrow {
+    display: none;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.ud-nav__item.is-active .ud-nav__arrow {
+    transform: rotate(180deg);
+}
+
+/* -----------------------------------------------------------------------------
+   7. PAINEL DE CONTEÚDO (desktop)
+   ----------------------------------------------------------------------------- */
+
+.ud-modal__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* Cabeçalho do produto */
+.ud-modal__product {
+    padding: 16px;
+    border-bottom: 1px solid #e7e7e7;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.ud-product__thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    flex-shrink: 0;
+}
+
+.ud-product__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ud-product__name {
+    font-size: 12px;
+    color: #333;
+    margin: 0 0 4px;
+    line-height: 1.4;
+}
+
+.ud-product__price {
+    font-size: 14px;
+    color: #575757;
+    margin: 0;
+}
+
+/* Abas de conteúdo */
+.ud-tab-content {
+    display: none;
+    padding: 16px 20px;
+}
+
+.ud-tab-content.is-active {
+    display: block;
+}
+
+.ud-tab__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 16px;
+}
+
+/* -----------------------------------------------------------------------------
+   8. TABELA DE PARCELAS (cartão)
+   ----------------------------------------------------------------------------- */
+
+.ud-installment-table {
+    border: 1px solid #e7e7e7;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.ud-installment-table__header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #f1f1f1;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #696969;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.ud-installment-table__header span:last-child {
+    text-align: right;
+}
+
+.ud-installment-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ud-installment-row:last-child {
+    border-bottom: none;
+}
+
+.ud-installment-row--odd {
+    background: #ffffff;
+}
+
+.ud-installment-row--even {
+    background: #fbfbfb;
+}
+
+.ud-installment-row__label {
+    color: #575757;
+}
+
+.ud-installment-row__label em {
+    font-style: normal;
+    font-size: 12px;
+    color: #888;
+}
+
+.ud-installment-row__total {
+    color: #333;
+    text-align: right;
+    font-weight: 700;
+}
+
+/* -----------------------------------------------------------------------------
+   9. CONTEÚDO PIX / BOLETO
+   ----------------------------------------------------------------------------- */
+
+.ud-payment__price {
+    margin: 0 0 4px;
+}
+
+.ud-payment__price--highlight {
+    font-size: 32px;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.ud-payment__discount {
+    font-size: 14px;
+    color: #575757;
+    margin: 0 0 20px;
+}
+
+.ud-payment__discount strong {
+    color: #28a745;
+}
+
+.ud-payment__info {
+    border-top: 1px solid #e7e7e7;
+    padding-top: 16px;
+}
+
+.ud-payment__info-title {
+    font-weight: 700;
+    color: #333;
+    font-size: 14px;
+    margin: 0 0 6px;
+}
+
+.ud-payment__steps {
+    padding-left: 20px;
+    margin: 0 0 16px;
+}
+
+.ud-payment__steps li {
+    font-size: 13px;
+    color: #575757;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.ud-payment__info-text {
+    font-size: 13px;
+    color: #575757;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* -----------------------------------------------------------------------------
+   10. MOBILE TAB (accordion)
+   ----------------------------------------------------------------------------- */
+
+.ud-mobile-tab {
+    display: none;
+}
+
+/* -----------------------------------------------------------------------------
+   11. RESPONSIVO
+   ----------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+
+    .ud-modal__body {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .ud-modal__nav {
+        width: 100%;
+        border-right: none;
+        overflow-y: visible;
+    }
+
+    /* Esconde o painel desktop, o conteúdo vai dentro do accordion */
+    .ud-modal__content {
+        display: none;
+    }
+
+    /* Exibe o container mobile abaixo de cada nav item */
+    .ud-mobile-tab {
+        display: block;
+        background: #fff;
+        border-bottom: 1px solid #e7e7e7;
+    }
+
+    /* Mostra a setinha no mobile */
+    .ud-nav__arrow {
+        display: block;
+    }
+
+    .ud-modal__product {
+        display: none; /* cabeçalho do produto fica oculto no mobile */
+    }
+
+    .ud-tab-content {
+        padding: 12px 16px;
+    }
+}
+
+@media (min-width: 768px) {
+    .ud-mobile-tab {
+        display: none !important;
+    }
 }
