@@ -18,8 +18,12 @@
             <show_in_store>1</show_in_store>
 
             <groups>
+
+                <!-- ============================================================
+                     Cartão de Crédito
+                     ============================================================ -->
                 <general translate="label">
-                    <label>Configurações Gerais</label>
+                    <label>Cartão de Crédito</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>10</sort_order>
                     <show_in_default>1</show_in_default>
@@ -48,7 +52,7 @@
                         </max_installments>
 
                         <cash_discount translate="label">
-                            <label>Desconto à Vista (%)</label>
+                            <label>Desconto à Vista no Cartão (%)</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
@@ -69,6 +73,75 @@
                         </interest_table>
                     </fields>
                 </general>
+
+                <!-- ============================================================
+                     Pix
+                     ============================================================ -->
+                <pix translate="label">
+                    <label>Pix</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+
+                    <fields>
+                        <enabled translate="label">
+                            <label>Habilitar Pix</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+
+                        <discount translate="label">
+                            <label>Desconto Pix (%)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Apenas números. Ex: 5</comment>
+                        </discount>
+                    </fields>
+                </pix>
+
+                <!-- ============================================================
+                     Boleto
+                     ============================================================ -->
+                <boleto translate="label">
+                    <label>Boleto Bancário</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>30</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+
+                    <fields>
+                        <enabled translate="label">
+                            <label>Habilitar Boleto</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+
+                        <discount translate="label">
+                            <label>Desconto Boleto (%)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Apenas números. Ex: 3</comment>
+                        </discount>
+                    </fields>
+                </boleto>
+
             </groups>
         </ultradev_parcelamento>
     </sections>
