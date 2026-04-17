@@ -43,6 +43,14 @@
                 <max_installments>12</max_installments>
                 <cash_discount>0</cash_discount>
             </general>
+            <pix>
+                <enabled>0</enabled>
+                <discount>0</discount>
+            </pix>
+            <boleto>
+                <enabled>0</enabled>
+                <discount>0</discount>
+            </boleto>
         </ultradev_parcelamento>
     </default>
 </config>
