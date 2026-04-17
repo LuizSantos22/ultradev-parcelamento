@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <s>
+                        <children>
+                            <config>
+                                <children>
+                                    <ultradev_parcelamento translate="title">
+                                        <title>UltraDev - Configurações de Parcelamento</title>
+                                    </ultradev_parcelamento>
+                                </children>
+                            </config>
+                        </children>
+                    </s>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
