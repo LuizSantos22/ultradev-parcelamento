@@ -1,42 +1,124 @@
 <?php
 /**
- * UltraDev_Parcelamento — template do widget de parcelamento
+ * UltraDev_Parcelamento — template do widget + modal de formas de pagamento
  *
- * Variáveis disponíveis via o Block:
- *   $this->getMaxInstallments()        → int
- *   $this->getCashDiscount()           → float
- *   $this->getFormattedInstallmentValue() → string (ex: "R$ 29,99")
- *   $this->getFormattedCashPrice()     → string (ex: "R$ 299,90")
- *   $this->getInterestTableJson()      → string JSON para o JS
+ * @var UltraDev_Parcelamento_Block_Catalog_Product_Parcelamento $this
  */
 ?>
-<div class="ultradev-parcelamento">
 
-    <p class="ultradev-parcelamento__installments">
-        <?php echo $this->__('ou até') ?>
-        <strong><?php echo (int) $this->getMaxInstallments() ?>x</strong>
-        <?php echo $this->__('de') ?>
-        <span id="ud-valor-parcela" class="ultradev-parcelamento__price ultradev-parcelamento__price--installment">
-            <?php echo $this->getFormattedInstallmentValue() ?>
-        </span>
-    </p>
+<?php /* =====================================================================
+   WIDGET — exibido inline na página de produto
+   ===================================================================== */ ?>
 
-    <?php if ($this->getCashDiscount() > 0): ?>
-        <p class="ultradev-parcelamento__cash">
+<div class="ud-parcelamento-widget">
+
+    <?php if ($this->isEnabled()): ?>
+        <p class="ud-widget__installments">
+            <?php echo $this->__('ou até') ?>
+            <strong><?php echo $this->getMaxInstallments() ?>x</strong>
+            <?php echo $this->__('de') ?>
+            <span id="ud-valor-parcela" class="ud-widget__price ud-widget__price--installment">
+                <?php echo $this->getFormattedInstallmentValue() ?>
+            </span>
+        </p>
+    <?php endif; ?>
+
+    <?php if ($this->isPixEnabled() && $this->getPixDiscount() > 0): ?>
+        <p class="ud-widget__cash">
             <?php echo $this->__('ou') ?>
-            <span id="ud-valor-avista" class="ultradev-parcelamento__price ultradev-parcelamento__price--cash">
+            <span class="ud-widget__price ud-widget__price--cash">
+                <?php echo $this->getFormattedPixPrice() ?>
+            </span>
+            <?php echo $this->__('no Pix') ?>
+            <span class="ud-widget__badge">
+                <?php echo $this->getPixDiscount() ?>% <?php echo $this->__('de desconto') ?>
+            </span>
+        </p>
+    <?php elseif ($this->isEnabled() && $this->getCashDiscount() > 0): ?>
+        <p class="ud-widget__cash">
+            <?php echo $this->__('ou') ?>
+            <span id="ud-valor-avista" class="ud-widget__price ud-widget__price--cash">
                 <?php echo $this->getFormattedCashPrice() ?>
             </span>
             <?php echo $this->__('à vista') ?>
-            <span class="ultradev-parcelamento__badge">
+            <span class="ud-widget__badge">
                 <?php echo $this->getCashDiscount() ?>% <?php echo $this->__('de desconto') ?>
             </span>
         </p>
     <?php endif; ?>
 
-    {{!-- Dados de configuração para o JS — sem inline style, sem lógica --}}
+    <a href="#" class="ud-widget__link" id="ud-open-modal">
+        <?php echo $this->__('Ver todas as formas de pagamento') ?>
+    </a>
+
+    <?php /* Dados de configuração para o JS */ ?>
     <input type="hidden" id="ud-config-max"    value="<?php echo (int) $this->getMaxInstallments() ?>">
     <input type="hidden" id="ud-config-desc"   value="<?php echo (float) $this->getCashDiscount() ?>">
     <input type="hidden" id="ud-config-tabela" value='<?php echo $this->getInterestTableJson() ?>'>
 
 </div>
+
+<?php /* =====================================================================
+   MODAL — formas de pagamento
+   ===================================================================== */ ?>
+
+<div id="ud-modal-overlay" class="ud-modal-overlay" role="dialog" aria-modal="true" aria-label="<?php echo $this->__('Formas de pagamento') ?>">
+    <div class="ud-modal">
+
+        <?php /* Cabeçalho */ ?>
+        <div class="ud-modal__header">
+            <h2 class="ud-modal__title"><?php echo $this->__('Formas de pagamento') ?></h2>
+            <button class="ud-modal__close" id="ud-close-modal" aria-label="<?php echo $this->__('Fechar') ?>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+                    <path d="M6.9998 8.40005L2.0998 13.3C1.91647 13.4834 1.68314 13.575 1.3998 13.575C1.11647 13.575 0.883138 13.4834 0.699804 13.3C0.516471 13.1167 0.424805 12.8834 0.424805 12.6C0.424805 12.3167 0.516471 12.0834 0.699804 11.9L5.5998 7.00005L0.699804 2.10005C0.516471 1.91672 0.424805 1.68338 0.424805 1.40005C0.424805 1.11672 0.516471 0.883382 0.699804 0.700048C0.883138 0.516715 1.11647 0.425049 1.3998 0.425049C1.68314 0.425049 1.91647 0.516715 2.0998 0.700048L6.9998 5.60005L11.8998 0.700048C12.0831 0.516715 12.3165 0.425049 12.5998 0.425049C12.8831 0.425049 13.1165 0.516715 13.2998 0.700048C13.4831 0.883382 13.5748 1.11672 13.5748 1.40005C13.5748 1.68338 13.4831 1.91672 13.2998 2.10005L8.3998 7.00005L13.2998 11.9C13.4831 12.0834 13.5748 12.3167 13.5748 12.6C13.5748 12.8834 13.4831 13.1167 13.2998 13.3C13.1165 13.4834 12.8831 13.575 12.5998 13.575C12.3165 13.575 12.0831 13.4834 11.8998 13.3L6.9998 8.40005Z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="ud-modal__body">
+
+            <?php /* Sidebar de navegação */ ?>
+            <nav class="ud-modal__nav">
+                <ul class="ud-nav__list">
+
+                    <?php if ($this->isEnabled()): ?>
+                        <li class="ud-nav__item" id="ud-nav-card" data-tab="card">
+                            <div class="ud-nav__item-inner">
+                                <svg class="ud-nav__icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M21 10V8C21 6.89543 20.1046 6 19 6H17M21 10V16C21 17.1046 20.1046 18 19 18H12M21 10H3M3 10V16C3 17.1046 3.89543 18 5 18H7M3 10V8C3 6.89543 3.89543 6 5 6H12M6 15H10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span><?php echo $this->__('Cartão de Crédito') ?></span>
+                            </div>
+                            <svg class="ud-nav__arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </li>
+                        <div id="ud-mobile-card" class="ud-mobile-tab"></div>
+                    <?php endif; ?>
+
+                    <?php if ($this->isPixEnabled()): ?>
+                        <li class="ud-nav__item" id="ud-nav-pix" data-tab="pix">
+                            <div class="ud-nav__item-inner">
+                                <svg class="ud-nav__icon" width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="0.58" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11.917 11.71a2.046 2.046 0 0 1-1.454-.602l-2.1-2.1a.4.4 0 0 0-.551 0l-2.108 2.108a2.044 2.044 0 0 1-1.454.602h-.414l2.66 2.66c.83.83 2.177.83 3.007 0l2.667-2.668h-.253zM4.25 4.282c.55 0 1.066.214 1.454.602l2.108 2.108a.39.39 0 0 0 .552 0l2.1-2.1a2.044 2.044 0 0 1 1.453-.602h.253L9.503 1.623a2.127 2.127 0 0 0-3.007 0l-2.66 2.66h.414z"/>
+                                    <path d="m14.377 6.496-1.612-1.612a.307.307 0 0 1-.114.023h-.733c-.379 0-.75.154-1.017.422l-2.1 2.1a1.005 1.005 0 0 1-1.425 0L5.268 5.32a1.448 1.448 0 0 0-1.018-.422h-.9a.306.306 0 0 1-.109-.021L1.623 6.496c-.83.83-.83 2.177 0 3.008l1.618 1.618a.305.305 0 0 1 .108-.022h.901c.38 0 .75-.153 1.018-.421L7.375 8.57a1.034 1.034 0 0 1 1.426 0l2.1 2.1c.267.268.638.421 1.017.421h.733c.04 0 .079.01.114.024l1.612-1.612c.83-.83.83-2.178 0-3.008z"/>
+                                </svg>
+                                <span><?php echo $this->__('Pix') ?></span>
+                            </div>
+                            <svg class="ud-nav__arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </li>
+                        <div id="ud-mobile-pix" class="ud-mobile-tab"></div>
+                    <?php endif; ?>
+
+                    <?php if ($this->isBoletoEnabled()): ?>
+                        <li class="ud-nav__item" id="ud-nav-boleto" data-tab="boleto">
+                            <div class="ud-nav__item-inner">
+                                <svg class="ud-nav__icon" viewBox="0 0 488.6 488.6" width="22" height="22" fill="currentColor">
+                                    <g>
+                                        <rect width="12" x="467.8" y="5.2" height="478.2"/>
+                                        <rect width="12" x="389.8" y="5.2" height="396.1"/>
+                                        <rect width="12" x="311.9" y="5.2" height="396.1"/>
+                                        <rect width="12" x="233.9" y="5.2" height="396.1"/>
+                                        <rect width="12" x="155.
