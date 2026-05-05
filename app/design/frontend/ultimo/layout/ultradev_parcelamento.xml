@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <layout>
     <catalog_product_view>
+
         <reference name="head">
+            <!-- Carrega o CSS e JS do módulo UltraDev Parcelamento na página de produto -->
             <action method="addItem">
                 <type>skin_css</type>
                 <name>css/ultradev/parcelamento.css</name>
@@ -10,6 +12,16 @@
                 <type>skin_js</type>
                 <name>js/ultradev/parcelamento.js</name>
             </action>
+
+            <!--
+                SCHEMA.ORG (JSON-LD) — SEO de preço
+                Injeta structured data no <head> com o menor preço disponível
+                (Pix ou Boleto), permitindo que motores de busca indexem o
+                preço real praticado em vez do preço cheio do cartão.
+                Pode ser desativado em: Admin > UltraDev Parcelamento > SEO > Ativar Schema.org
+            -->
+            <block type="ultradev_parcelamento/catalog_product_schemaOrg"
+                   name="ultradev.parcelamento.schemaorg" />
         </reference>
 
         <reference name="product.info">
@@ -19,11 +31,12 @@
             <!-- BLOCO DE PREÇO PERSONALIZADO - COMENTADO/DESATIVADO
             <block type="catalog/product_price" name="product.price" template="ultradev/parcelamento/product/price.phtml" />
             -->
-            
+
             <!-- BLOCO DE PARCELAMENTO (widget) -->
             <block type="ultradev_parcelamento/catalog_product_parcelamento"
                    name="ultradev_parcelamento"
                    template="ultradev/parcelamento/product/parcelamento.phtml" />
         </reference>
+
     </catalog_product_view>
 </layout>
