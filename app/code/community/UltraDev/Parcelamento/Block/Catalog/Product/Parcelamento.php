@@ -27,7 +27,7 @@ class UltraDev_Parcelamento_Block_Catalog_Product_Parcelamento extends Mage_Core
     }
 
     // -------------------------------------------------------------------------
-    // Cartão
+    // Cart達o
     // -------------------------------------------------------------------------
 
     public function isEnabled(): bool
@@ -62,17 +62,11 @@ class UltraDev_Parcelamento_Block_Catalog_Product_Parcelamento extends Mage_Core
         return $this->getParcelamentoHelper()->getInterestTableJson();
     }
 
-    /**
-     * Todas as linhas da tabela para o modal — já calculadas.
-     */
     public function getAllInstallmentRows(): array
     {
         return $this->getParcelamentoHelper()->getAllInstallmentRows($this->getFinalPrice());
     }
 
-    /**
-     * Formata um float como moeda BRL.
-     */
     public function formatCurrency(float $value): string
     {
         return Mage::helper('core')->currency($value, true, false);
@@ -140,6 +134,23 @@ class UltraDev_Parcelamento_Block_Catalog_Product_Parcelamento extends Mage_Core
     // -------------------------------------------------------------------------
     // Lifecycle
     // -------------------------------------------------------------------------
+
+    /**
+     * Ativa o handle de layout do custom price box se a config estiver habilitada.
+     * Precisa rodar antes do _toHtml() para o setTemplate funcionar a tempo.
+     */
+    protected function _prepareLayout(): self
+    {
+        parent::_prepareLayout();
+
+        if (Mage::getStoreConfigFlag('ultradev_parcelamento/custom_price/enabled')) {
+            $this->getLayout()
+                 ->getUpdate()
+                 ->addHandle('ultradev_parcelamento_custom_price');
+        }
+
+        return $this;
+    }
 
     protected function _toHtml(): string
     {
