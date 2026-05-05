@@ -4,7 +4,7 @@
         <resources>
             <admin>
                 <children>
-                    <s>
+                    <system>
                         <children>
                             <config>
                                 <children>
@@ -14,7 +14,7 @@
                                 </children>
                             </config>
                         </children>
-                    </s>
+                    </system>
                 </children>
             </admin>
         </resources>
