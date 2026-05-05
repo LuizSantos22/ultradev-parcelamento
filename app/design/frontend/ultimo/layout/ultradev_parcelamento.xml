@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<layout>
+    <catalog_product_view>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/ultradev/parcelamento.css</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/ultradev/parcelamento.js</name>
+            </action>
+        </reference>
+
+        <reference name="product.info">
+            <!-- Remove a disponibilidade original para evitar duplicação -->
+            <action method="unsetChild"><name>product.info.availability</name></action>
+
+            <!-- BLOCO DE PREÇO PERSONALIZADO - COMENTADO/DESATIVADO
+            <block type="catalog/product_price" name="product.price" template="ultradev/parcelamento/product/price.phtml" />
+            -->
+            
+            <!-- BLOCO DE PARCELAMENTO (widget) -->
+            <block type="ultradev_parcelamento/catalog_product_parcelamento"
+                   name="ultradev_parcelamento"
+                   template="ultradev/parcelamento/product/parcelamento.phtml" />
+        </reference>
+    </catalog_product_view>
+</layout>
