@@ -1,0 +1,54 @@
+<?php
+/**
+ * UltraDev_Parcelamento — Custom Price Box (mockup style)
+ * 
+ * Gera o topo do box de preço (old price, availability, special price, badge)
+ * O restante (parcelas, grid "ou") fica por conta do parcelamento.phtml
+ */
+$_customPrice = Mage::getStoreConfigFlag('ultradev_parcelamento/custom_price/enabled');
+
+if (!$_customPrice):
+    include Mage::getDesign()->getTemplateFilename('catalog/product/price.phtml');
+    return;
+endif;
+
+$_product      = $this->getProduct();
+$_id           = $_product->getId();
+$_suffix       = $this->getIdSuffix();
+$_regularPrice = $_product->getPrice();
+$_finalPrice   = $_product->getFinalPrice();
+$_hasSpecial   = ($_finalPrice < $_regularPrice);
+$_discountPct  = $_hasSpecial ? round((1 - $_finalPrice / $_regularPrice) * 100) : 0;
+
+if ($_product->isGrouped()):
+    include Mage::getDesign()->getTemplateFilename('catalog/product/price.phtml');
+    return;
+endif;
+
+$coreHelper = Mage::helper('core');
+?>
+
+<div class="price-box udp">
+    <!-- Linha superior: preço antigo + disponibilidade -->
+    <div class="udp-top">
+        <?php if ($_hasSpecial): ?>
+            <p class="udp-old">
+                <?php echo $coreHelper->formatPrice($_regularPrice, false); ?>
+            </p>
+        <?php endif; ?>
+        <p class="udp-avail">
+            <?php echo $this->__('Disponível'); ?>: 
+            <span><?php echo $this->__($_product->isSalable() ? 'Em estoque' : 'Indisponível'); ?></span>
+        </p>
+    </div>
+
+    <!-- Bloco principal: preço + selo -->
+    <div class="udp-hero">
+        <span class="udp-price" id="product-price-<?php echo $_id . $_suffix; ?>">
+            <?php echo $coreHelper->formatPrice($_finalPrice, false); ?>
+        </span>
+        <?php if ($_hasSpecial && $_discountPct > 0): ?>
+            <span class="udp-badge">-<?php echo $_discountPct; ?>%</span>
+        <?php endif; ?>
+    </div>
+</div>
