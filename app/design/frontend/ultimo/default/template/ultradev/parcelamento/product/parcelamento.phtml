@@ -1,85 +1,139 @@
 <?php
 /**
- * UltraDev_Parcelamento — template do widget + modal de formas de pagamento
- *
+ * UltraDev_Parcelamento — widget inline + modal
  * @var UltraDev_Parcelamento_Block_Catalog_Product_Parcelamento $this
  */
+
+$_customPrice   = Mage::getStoreConfigFlag('ultradev_parcelamento/custom_price/enabled');
+$_pixEnabled    = $this->isPixEnabled()    && $this->getPixDiscount()    > 0;
+$_boletoEnabled = $this->isBoletoEnabled() && $this->getBoletoDiscount() > 0;
+$_cardEnabled   = $this->isEnabled();
+
+if ($_pixEnabled && $_boletoEnabled) {
+    $_cashLabel    = $this->__('Pix') . ' <span class="udp-sep">|</span> ' . $this->__('Boleto');
+    $_cashPrice    = $this->getFormattedPixPrice();
+    $_cashDiscount = $this->getPixDiscount();
+} elseif ($_pixEnabled) {
+    $_cashLabel    = $this->__('Pix');
+    $_cashPrice    = $this->getFormattedPixPrice();
+    $_cashDiscount = $this->getPixDiscount();
+} elseif ($_boletoEnabled) {
+    $_cashLabel    = $this->__('Boleto');
+    $_cashPrice    = $this->getFormattedBoletoPrice();
+    $_cashDiscount = $this->getBoletoDiscount();
+} else {
+    $_cashLabel    = null;
+    $_cashPrice    = null;
+    $_cashDiscount = 0;
+}
+
+$_hasCash = $_cashLabel !== null;
 ?>
 
-<?php /* =====================================================================
-   WIDGET — exibido inline na página de produto
-   ===================================================================== */ ?>
+<?php if ($_customPrice): ?>
+
+<div class="udp-widget">
+    <div class="udp-div"></div>
+    <div class="udp-grid">
+
+        <?php if ($_hasCash): ?>
+        <div class="udp-cell udp-cell--left">
+            <span class="udp-label"><?php echo $_cashLabel ?></span>
+            <span class="udp-val udp-val--green"><?php echo $_cashPrice ?></span>
+            <span class="udp-sub"><?php echo $_cashDiscount ?>% <?php echo $this->__('de desconto') ?></span>
+        </div>
+        <?php elseif ($_cardEnabled && $this->getCashDiscount() > 0): ?>
+        <div class="udp-cell udp-cell--left">
+            <span class="udp-label"><?php echo $this->__('À vista') ?></span>
+            <span class="udp-val udp-val--green"><?php echo $this->getFormattedCashPrice() ?></span>
+            <span class="udp-sub"><?php echo $this->getCashDiscount() ?>% <?php echo $this->__('de desconto') ?></span>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($_cardEnabled && ($_hasCash || $this->getCashDiscount() > 0)): ?>
+        <div class="udp-ou">
+            <div class="udp-ou-line"></div>
+            <div class="udp-ou-circle"><span><?php echo $this->__('ou') ?></span></div>
+            <div class="udp-ou-line"></div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($_cardEnabled): ?>
+        <div class="udp-cell udp-cell--right">
+            <span class="udp-label"><?php echo $this->__('Cartão') ?></span>
+            <span id="ud-valor-parcela" class="udp-val">
+                <?php echo $this->getMaxInstallments() ?>x <?php echo $this->__('de') ?> <?php echo $this->getFormattedInstallmentValue() ?>
+            </span>
+            <a href="#" class="udp-link" id="ud-open-modal">
+                <?php echo $this->__('Ver parcelamento') ?> ↓
+            </a>
+        </div>
+        <?php endif; ?>
+
+    </div>
+</div>
+
+<?php else: ?>
 
 <div class="ud-parcelamento-widget">
 
-    <?php /* ----- PIX (agora vem primeiro) ----- */ ?>
-    <?php if ($this->isPixEnabled() && $this->getPixDiscount() > 0): ?>
-        <p class="ud-widget__cash">
-            <svg class="ud-widget__icon" width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="0.58" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11.917 11.71a2.046 2.046 0 0 1-1.454-.602l-2.1-2.1a.4.4 0 0 0-.551 0l-2.108 2.108a2.044 2.044 0 0 1-1.454.602h-.414l2.66 2.66c.83.83 2.177.83 3.007 0l2.667-2.668h-.253zM4.25 4.282c.55 0 1.066.214 1.454.602l2.108 2.108a.39.39 0 0 0 .552 0l2.1-2.1a2.044 2.044 0 0 1 1.453-.602h.253L9.503 1.623a2.127 2.127 0 0 0-3.007 0l-2.66 2.66h.414z"/>
-                <path d="m14.377 6.496-1.612-1.612a.307.307 0 0 1-.114.023h-.733c-.379 0-.75.154-1.017.422l-2.1 2.1a1.005 1.005 0 0 1-1.425 0L5.268 5.32a1.448 1.448 0 0 0-1.018-.422h-.9a.306.306 0 0 1-.109-.021L1.623 6.496c-.83.83-.83 2.177 0 3.008l1.618 1.618a.305.305 0 0 1 .108-.022h.901c.38 0 .75-.153 1.018-.421L7.375 8.57a1.034 1.034 0 0 1 1.426 0l2.1 2.1c.267.268.638.421 1.017.421h.733c.04 0 .079.01.114.024l1.612-1.612c.83-.83.83-2.178 0-3.008z"/>
-            </svg>
-            <span class="ud-widget__price ud-widget__price--cash">
-                <?php echo $this->getFormattedPixPrice() ?>
-            </span>
-            <?php echo $this->__('no Pix') ?>
-            <span class="ud-widget__badge">
-                <?php echo $this->getPixDiscount() ?>% <?php echo $this->__('de desconto') ?>
-            </span>
-        </p>
-    <?php elseif ($this->isEnabled() && $this->getCashDiscount() > 0): ?>
-        <p class="ud-widget__cash">
-            <svg class="ud-widget__icon" width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="0.58" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11.917 11.71a2.046 2.046 0 0 1-1.454-.602l-2.1-2.1a.4.4 0 0 0-.551 0l-2.108 2.108a2.044 2.044 0 0 1-1.454.602h-.414l2.66 2.66c.83.83 2.177.83 3.007 0l2.667-2.668h-.253zM4.25 4.282c.55 0 1.066.214 1.454.602l2.108 2.108a.39.39 0 0 0 .552 0l2.1-2.1a2.044 2.044 0 0 1 1.453-.602h.253L9.503 1.623a2.127 2.127 0 0 0-3.007 0l-2.66 2.66h.414z"/>
-                <path d="m14.377 6.496-1.612-1.612a.307.307 0 0 1-.114.023h-.733c-.379 0-.75.154-1.017.422l-2.1 2.1a1.005 1.005 0 0 1-1.425 0L5.268 5.32a1.448 1.448 0 0 0-1.018-.422h-.9a.306.306 0 0 1-.109-.021L1.623 6.496c-.83.83-.83 2.177 0 3.008l1.618 1.618a.305.305 0 0 1 .108-.022h.901c.38 0 .75-.153 1.018-.421L7.375 8.57a1.034 1.034 0 0 1 1.426 0l2.1 2.1c.267.268.638.421 1.017.421h.733c.04 0 .079.01.114.024l1.612-1.612c.83-.83.83-2.178 0-3.008z"/>
-            </svg>
-            <span id="ud-valor-avista" class="ud-widget__price ud-widget__price--cash">
-                <?php echo $this->getFormattedCashPrice() ?>
-            </span>
-            <?php echo $this->__('à vista') ?>
-            <span class="ud-widget__badge">
-                <?php echo $this->getCashDiscount() ?>% <?php echo $this->__('de desconto') ?>
-            </span>
-        </p>
+    <?php if ($_pixEnabled): ?>
+    <p class="ud-widget__cash">
+        <svg class="ud-widget__icon" width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="0.58" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11.917 11.71a2.046 2.046 0 0 1-1.454-.602l-2.1-2.1a.4.4 0 0 0-.551 0l-2.108 2.108a2.044 2.044 0 0 1-1.454.602h-.414l2.66 2.66c.83.83 2.177.83 3.007 0l2.667-2.668h-.253zM4.25 4.282c.55 0 1.066.214 1.454.602l2.108 2.108a.39.39 0 0 0 .552 0l2.1-2.1a2.044 2.044 0 0 1 1.453-.602h.253L9.503 1.623a2.127 2.127 0 0 0-3.007 0l-2.66 2.66h.414z"/>
+            <path d="m14.377 6.496-1.612-1.612a.307.307 0 0 1-.114.023h-.733c-.379 0-.75.154-1.017.422l-2.1 2.1a1.005 1.005 0 0 1-1.425 0L5.268 5.32a1.448 1.448 0 0 0-1.018-.422h-.9a.306.306 0 0 1-.109-.021L1.623 6.496c-.83.83-.83 2.177 0 3.008l1.618 1.618a.305.305 0 0 1 .108-.022h.901c.38 0 .75-.153 1.018-.421L7.375 8.57a1.034 1.034 0 0 1 1.426 0l2.1 2.1c.267.268.638.421 1.017.421h.733c.04 0 .079.01.114.024l1.612-1.612c.83-.83.83-2.178 0-3.008z"/>
+        </svg>
+        <span class="ud-widget__price ud-widget__price--cash"><?php echo $this->getFormattedPixPrice() ?></span>
+        <?php echo $this->__('no Pix') ?>
+        <span class="ud-widget__badge"><?php echo $this->getPixDiscount() ?>% <?php echo $this->__('de desconto') ?></span>
+    </p>
+    <?php elseif ($_boletoEnabled): ?>
+    <p class="ud-widget__cash">
+        <svg class="ud-widget__icon" viewBox="0 0 488.6 488.6" width="22" height="22" fill="currentColor">
+            <g><rect width="12" x="467.8" y="5.2" height="478.2"/><rect width="12" x="389.8" y="5.2" height="396.1"/><rect width="12" x="311.9" y="5.2" height="396.1"/><rect width="12" x="233.9" y="5.2" height="396.1"/><rect width="12" x="155.9" y="5.2" height="396.1"/><rect width="12" x="78" y="5.2" height="396.1"/><rect width="12" y="5.2" height="478.2"/></g>
+        </svg>
+        <span class="ud-widget__price ud-widget__price--cash"><?php echo $this->getFormattedBoletoPrice() ?></span>
+        <?php echo $this->__('no Boleto') ?>
+        <span class="ud-widget__badge"><?php echo $this->getBoletoDiscount() ?>% <?php echo $this->__('de desconto') ?></span>
+    </p>
+    <?php elseif ($_cardEnabled && $this->getCashDiscount() > 0): ?>
+    <p class="ud-widget__cash">
+        <span id="ud-valor-avista" class="ud-widget__price ud-widget__price--cash"><?php echo $this->getFormattedCashPrice() ?></span>
+        <?php echo $this->__('à vista') ?>
+        <span class="ud-widget__badge"><?php echo $this->getCashDiscount() ?>% <?php echo $this->__('de desconto') ?></span>
+    </p>
     <?php endif; ?>
 
-    <?php /* ----- PARCELAMENTO com link integrado na mesma linha ----- */ ?>
-    <?php if ($this->isEnabled()): ?>
-        <p class="ud-widget__installments">
-            <svg class="ud-widget__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10V8C21 6.89543 20.1046 6 19 6H17M21 10V16C21 17.1046 20.1046 18 19 18H12M21 10H3M3 10V16C3 17.1046 3.89543 18 5 18H7M3 10V8C3 6.89543 3.89543 6 5 6H12M6 15H10"/>
+    <?php if ($_cardEnabled): ?>
+    <p class="ud-widget__installments">
+        <svg class="ud-widget__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10V8C21 6.89543 20.1046 6 19 6H17M21 10V16C21 17.1046 20.1046 18 19 18H12M21 10H3M3 10V16C3 17.1046 3.89543 18 5 18H7M3 10V8C3 6.89543 3.89543 6 5 6H12M6 15H10"/>
+        </svg>
+        <?php echo $this->getMaxInstallments() ?>x
+        <?php echo $this->__('de') ?>
+        <span id="ud-valor-parcela" class="ud-widget__price"><?php echo $this->getFormattedInstallmentValue() ?></span>
+        <a href="#" class="ud-widget__link" id="ud-open-modal">
+            <?php echo $this->__('Ver formas de pagamento') ?>
+            <svg class="ud-widget__arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
             </svg>
-            <?php echo $this->getMaxInstallments() ?>x
-            <?php echo $this->__('de') ?>
-            <span id="ud-valor-parcela" class="ud-widget__price"><?php echo $this->getFormattedInstallmentValue() ?></span>
-
-            <?php /* Link integrado */ ?>
-            <a href="#" class="ud-widget__link" id="ud-open-modal">
-                <?php echo $this->__('Ver formas de pagamento') ?>
-                <svg class="ud-widget__arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"/>
-                </svg>
-            </a>
-        </p>
+        </a>
+    </p>
     <?php endif; ?>
-
-    <?php /* Dados de configuração para o JS */ ?>
-    <input type="hidden" id="ud-config-max"        value="<?php echo (int) $this->getMaxInstallments() ?>">
-<input type="hidden" id="ud-config-desc"       value="<?php echo (float) $this->getCashDiscount() ?>">
-<input type="hidden" id="ud-config-tabela"     value='<?php echo $this->getInterestTableJson() ?>'>
-<input type="hidden" id="ud-config-pix-desc"   value="<?php echo (float) $this->getPixDiscount() ?>">
-<input type="hidden" id="ud-config-boleto-desc" value="<?php echo (float) $this->getBoletoDiscount() ?>">
 
 </div>
 
-<?php /* =====================================================================
-   MODAL — formas de pagamento (inalterado)
-   ===================================================================== */ ?>
+<?php endif; ?>
+
+<input type="hidden" id="ud-config-max"         value="<?php echo (int)   $this->getMaxInstallments() ?>">
+<input type="hidden" id="ud-config-desc"        value="<?php echo (float) $this->getCashDiscount() ?>">
+<input type="hidden" id="ud-config-tabela"      value='<?php echo $this->getInterestTableJson() ?>'>
+<input type="hidden" id="ud-config-pix-desc"    value="<?php echo (float) $this->getPixDiscount() ?>">
+<input type="hidden" id="ud-config-boleto-desc" value="<?php echo (float) $this->getBoletoDiscount() ?>">
 
 <div id="ud-modal-overlay" class="ud-modal-overlay" role="dialog" aria-modal="true" aria-label="<?php echo $this->__('Formas de pagamento') ?>">
     <div class="ud-modal">
 
-        <?php /* Cabeçalho */ ?>
         <div class="ud-modal__header">
             <h2 class="ud-modal__title"><?php echo $this->__('Formas de pagamento') ?></h2>
             <button class="ud-modal__close" id="ud-close-modal" aria-label="<?php echo $this->__('Fechar') ?>">
@@ -90,11 +144,8 @@
         </div>
 
         <div class="ud-modal__body">
-
-            <?php /* Sidebar de navegação */ ?>
             <nav class="ud-modal__nav">
                 <ul class="ud-nav__list">
-
                     <?php if ($this->isEnabled()): ?>
                         <li class="ud-nav__item" data-tab="card">
                             <div class="ud-nav__item-inner">
@@ -107,10 +158,8 @@
                                 <polyline points="6 9 12 15 18 9"/>
                             </svg>
                         </li>
-                        <?php /* Mobile accordion para cartão */ ?>
                         <div class="ud-mobile-tab" data-tab="card"></div>
                     <?php endif; ?>
-
                     <?php if ($this->isPixEnabled()): ?>
                         <li class="ud-nav__item" data-tab="pix">
                             <div class="ud-nav__item-inner">
@@ -126,11 +175,12 @@
                         </li>
                         <div class="ud-mobile-tab" data-tab="pix"></div>
                     <?php endif; ?>
-
                     <?php if ($this->isBoletoEnabled()): ?>
                         <li class="ud-nav__item" data-tab="boleto">
                             <div class="ud-nav__item-inner">
-                                <svg viewBox="0 0 488.6 488.6" width="22" height="22" fill="currentColor"><g><rect width="12" x="467.8" y="5.2" height="478.2"></rect><rect width="12" x="389.8" y="5.2" height="396.1"></rect><rect width="12" x="311.9" y="5.2" height="396.1"></rect><rect width="12" x="233.9" y="5.2" height="396.1"></rect><rect width="12" x="155.9" y="5.2" height="396.1"></rect><rect width="12" x="78" y="5.2" height="396.1"></rect><rect width="12" y="5.2" height="478.2"></rect></g></svg>
+                                <svg viewBox="0 0 488.6 488.6" width="22" height="22" fill="currentColor">
+                                    <g><rect width="12" x="467.8" y="5.2" height="478.2"/><rect width="12" x="389.8" y="5.2" height="396.1"/><rect width="12" x="311.9" y="5.2" height="396.1"/><rect width="12" x="233.9" y="5.2" height="396.1"/><rect width="12" x="155.9" y="5.2" height="396.1"/><rect width="12" x="78" y="5.2" height="396.1"/><rect width="12" y="5.2" height="478.2"/></g>
+                                </svg>
                                 <span><?php echo $this->__('Boleto') ?></span>
                             </div>
                             <svg class="ud-nav__arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -139,13 +189,10 @@
                         </li>
                         <div class="ud-mobile-tab" data-tab="boleto"></div>
                     <?php endif; ?>
-
                 </ul>
             </nav>
 
-            <?php /* Painel de conteúdo (desktop) */ ?>
             <div class="ud-modal__content">
-                <?php /* Header do produto */ ?>
                 <div class="ud-modal__product-header">
                     <img src="<?php echo $this->getProductImageUrl() ?>" alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" class="ud-modal__product-thumb" width="56" height="56">
                     <div class="ud-modal__product-info">
@@ -154,86 +201,68 @@
                     </div>
                 </div>
 
-                <?php /* ---- ABA: CARTÃO DE CRÉDITO ---- */ ?>
                 <?php if ($this->isEnabled()): ?>
-                    <div class="ud-tab-content" data-tab="card">
-                        <p class="ud-tab__title"><?php echo $this->__('Cartão de Crédito') ?></p>
-
-                        <div class="ud-installment-table">
-                            <div class="ud-installment-table__header">
-                                <span><?php echo $this->__('Parcelamento') ?></span>
-                                <span><?php echo $this->__('Total') ?></span>
-                            </div>
-                            <?php /* Linhas preenchidas dinamicamente pelo JS via classe ud-tabela-parcelas-body */ ?>
-                            <div class="ud-tabela-parcelas-body"></div>
+                <div class="ud-tab-content" data-tab="card">
+                    <p class="ud-tab__title"><?php echo $this->__('Cartão de Crédito') ?></p>
+                    <div class="ud-installment-table">
+                        <div class="ud-installment-table__header">
+                            <span><?php echo $this->__('Parcelamento') ?></span>
+                            <span><?php echo $this->__('Total') ?></span>
                         </div>
+                        <div class="ud-tabela-parcelas-body"></div>
                     </div>
+                </div>
                 <?php endif; ?>
 
-                <?php /* ---- ABA: PIX ---- */ ?>
                 <?php if ($this->isPixEnabled()): ?>
-                    <div class="ud-tab-content" data-tab="pix">
-                        <p class="ud-tab__title"><?php echo $this->__('Pix') ?></p>
-
-                        <?php if ($this->getPixDiscount() > 0): ?>
-                            <p class="ud-payment__price--highlight" id="ud-modal-pix-price">
-                            <?php echo $this->getFormattedPixPrice() ?>
-                            </p>
-                            <p class="ud-payment__discount">
-                                <?php echo $this->__('Economize') ?>
-                                <strong><?php echo $this->getPixDiscount() ?>% <?php echo $this->__('de desconto') ?></strong>
-                                <?php echo $this->__('pagando à vista.') ?>
-                            </p>
-                        <?php endif; ?>
-
-                        <div class="ud-payment__info">
-                            <p class="ud-payment__info-title"><?php echo $this->__('Passo a passo:') ?></p>
-                            <ol class="ud-payment__steps">
-                                <li><?php echo $this->__('Após concluir o pedido, você terá um código Pix (ou QR Code) válido por 30 minutos.') ?></li>
-                                <li><?php echo $this->__('Utilize o aplicativo do seu banco para realizar a transferência.') ?></li>
-                                <li><?php echo $this->__('A confirmação ocorre em segundos e seu pedido já entra em processamento.') ?></li>
-                            </ol>
-                            <p class="ud-payment__info-title"><?php echo $this->__('Vantagens do Pix:') ?></p>
-                            <p class="ud-payment__info-text">
-                                <?php echo $this->__('É o método mais rápido e seguro do Brasil. Funciona 24 horas por dia, inclusive em finais de semana e feriados, garantindo que seu produto seja enviado mais rápido.') ?>
-                            </p>
-                        </div>
+                <div class="ud-tab-content" data-tab="pix">
+                    <p class="ud-tab__title"><?php echo $this->__('Pix') ?></p>
+                    <?php if ($this->getPixDiscount() > 0): ?>
+                        <p class="ud-payment__price--highlight" id="ud-modal-pix-price"><?php echo $this->getFormattedPixPrice() ?></p>
+                        <p class="ud-payment__discount">
+                            <?php echo $this->__('Economize') ?>
+                            <strong><?php echo $this->getPixDiscount() ?>% <?php echo $this->__('de desconto') ?></strong>
+                            <?php echo $this->__('pagando à vista.') ?>
+                        </p>
+                    <?php endif; ?>
+                    <div class="ud-payment__info">
+                        <p class="ud-payment__info-title"><?php echo $this->__('Passo a passo:') ?></p>
+                        <ol class="ud-payment__steps">
+                            <li><?php echo $this->__('Após concluir o pedido, você terá um código Pix (ou QR Code) válido por 30 minutos.') ?></li>
+                            <li><?php echo $this->__('Utilize o aplicativo do seu banco para realizar a transferência.') ?></li>
+                            <li><?php echo $this->__('A confirmação ocorre em segundos e seu pedido já entra em processamento.') ?></li>
+                        </ol>
+                        <p class="ud-payment__info-title"><?php echo $this->__('Vantagens do Pix:') ?></p>
+                        <p class="ud-payment__info-text"><?php echo $this->__('É o método mais rápido e seguro do Brasil. Funciona 24 horas por dia, inclusive em finais de semana e feriados, garantindo que seu produto seja enviado mais rápido.') ?></p>
                     </div>
+                </div>
                 <?php endif; ?>
 
-                <?php /* ---- ABA: BOLETO ---- */ ?>
                 <?php if ($this->isBoletoEnabled()): ?>
-                    <div class="ud-tab-content" data-tab="boleto">
-                        <p class="ud-tab__title"><?php echo $this->__('Boleto Bancário') ?></p>
-
-                        <?php if ($this->getBoletoDiscount() > 0): ?>
-                            <p class="ud-payment__price--highlight" id="ud-modal-boleto-price">
-                            <?php echo $this->getFormattedBoletoPrice() ?>
-                            </p>
-                            <p class="ud-payment__discount">
-                                <?php echo $this->__('Valor com') ?>
-                                <strong><?php echo $this->getBoletoDiscount() ?>% <?php echo $this->__('de desconto') ?></strong>
-                                <?php echo $this->__('aplicado.') ?>
-                            </p>
-                        <?php endif; ?>
-
-                        <div class="ud-payment__info">
-                            <p class="ud-payment__info-title"><?php echo $this->__('Informações importantes:') ?></p>
-                            <ol class="ud-payment__steps">
-                                <li><?php echo $this->__('O boleto pode ser pago em qualquer banco, casa lotérica ou via internet banking.') ?></li>
-                                <li><?php echo $this->__('O sistema bancário leva de 1 a 2 dias úteis para processar a compensação.') ?></li>
-                            </ol>
-                            <p class="ud-payment__info-text">
-                                <strong><?php echo $this->__('Nota:') ?></strong>
-                                <?php echo $this->__('O prazo de entrega informado no site passa a valer somente após a confirmação do pagamento pelo banco.') ?>
-                            </p>
-                        </div>
+                <div class="ud-tab-content" data-tab="boleto">
+                    <p class="ud-tab__title"><?php echo $this->__('Boleto Bancário') ?></p>
+                    <?php if ($this->getBoletoDiscount() > 0): ?>
+                        <p class="ud-payment__price--highlight" id="ud-modal-boleto-price"><?php echo $this->getFormattedBoletoPrice() ?></p>
+                        <p class="ud-payment__discount">
+                            <?php echo $this->__('Valor com') ?>
+                            <strong><?php echo $this->getBoletoDiscount() ?>% <?php echo $this->__('de desconto') ?></strong>
+                            <?php echo $this->__('aplicado.') ?>
+                        </p>
+                    <?php endif; ?>
+                    <div class="ud-payment__info">
+                        <p class="ud-payment__info-title"><?php echo $this->__('Informações importantes:') ?></p>
+                        <ol class="ud-payment__steps">
+                            <li><?php echo $this->__('O boleto pode ser pago em qualquer banco, casa lotérica ou via internet banking.') ?></li>
+                            <li><?php echo $this->__('O sistema bancário leva de 1 a 2 dias úteis para processar a compensação.') ?></li>
+                        </ol>
+                        <p class="ud-payment__info-text">
+                            <strong><?php echo $this->__('Nota:') ?></strong>
+                            <?php echo $this->__('O prazo de entrega informado no site passa a valer somente após a confirmação do pagamento pelo banco.') ?>
+                        </p>
                     </div>
+                </div>
                 <?php endif; ?>
-
-            </div><!-- end: ud-modal__content -->
-
-        </div><!-- end: ud-modal__body -->
-
-    </div><!-- end: ud-modal -->
-</div><!-- end: ud-modal-overlay -->
+            </div>
+        </div>
+    </div>
+</div>
