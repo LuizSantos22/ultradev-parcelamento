@@ -69,9 +69,9 @@ Example location inside `app/design/frontend/{package}/{theme}/template/catalog/
 ## Ultimo Theme — local.xml
 If you are using the Ultimo theme and have enabled Price Box Customizado (Admin → UltraDev → Parcelamento), you also need to declare the block inside your app/design/frontend/ultimo/default/layout/local.xml, within the <reference name="product.info">:
 
-<reference name="product.info">
+``` <reference name="product.info">
     <block type="catalog/product_price" name="product.price" template="ultradev/parcelamento/product/price.phtml" />
-</reference>
+</reference> ```
 
 
 That's all — no business logic inside the template.
